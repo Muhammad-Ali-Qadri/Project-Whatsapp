@@ -14,6 +14,7 @@ public class UserOpenHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "User.db";
     public static final String USER_PROFILE_TABLE = "UserProfiles";
     public static final String USERS_TABLE = "Users";
+    public static final String CHAT_TABLE = "Chat";
 
 
     public UserOpenHelper(Context c){
