@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Whatsapp</string>
     <string name="no_intrenet_connection">No internet connection available</string>
-    <string name="unknown_error">An unknown error occured</string>
+    <string name="unknown_error">An unknown error has occurred</string>
     <string name="signin_cancelled">Sign in was cancelled</string>
     <string name="default_status">Hey there! I am using Whatsapp!</string>
 </resources>
