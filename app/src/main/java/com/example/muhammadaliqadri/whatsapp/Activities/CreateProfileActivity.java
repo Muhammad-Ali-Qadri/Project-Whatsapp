@@ -39,7 +39,7 @@ public class CreateProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_profile);
         photo = findViewById(R.id.photo);
         userName = findViewById(R.id.name);
-        profilePhoto = null;
+        profilePhoto = photo.getDrawingCache();
         getSupportActionBar().setTitle("Profile Info");
 
         user = (WhatsappUser) getIntent().getSerializableExtra("user");
@@ -50,14 +50,16 @@ public class CreateProfileActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("name", userName.getText().toString());
-        outState.putByteArray("image", BitmapUtility.getBytes(profilePhoto.extractAlpha()));
+        if(profilePhoto != null)
+            outState.putByteArray("image", BitmapUtility.getBytes(profilePhoto.extractAlpha()));
         outState.putSerializable("user", user);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        photo.setImageBitmap(BitmapUtility.getImage(savedInstanceState.getByteArray("image")));
+        if(savedInstanceState.getByteArray("image") != null)
+            photo.setImageBitmap(BitmapUtility.getImage(savedInstanceState.getByteArray("image")));
         userName.setText(savedInstanceState.getString("name"));
         user = (WhatsappUser)savedInstanceState.getSerializable("user");
     }

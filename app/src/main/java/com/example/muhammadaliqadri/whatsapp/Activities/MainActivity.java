@@ -1,4 +1,5 @@
 package com.example.muhammadaliqadri.whatsapp.Activities;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
