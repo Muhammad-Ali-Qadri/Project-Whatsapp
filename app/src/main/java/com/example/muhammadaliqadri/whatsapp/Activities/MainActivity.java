@@ -1,5 +1,4 @@
 package com.example.muhammadaliqadri.whatsapp.Activities;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
@@ -55,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
             gotoCreateProfile(true);
         }
         else if(userCheck == 2){
-            //Start main chat activity
+            //TODO: R-Start main chat activity
             finish();
         }
         else {

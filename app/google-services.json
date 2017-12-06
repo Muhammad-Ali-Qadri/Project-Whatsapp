@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "910360162063-o0tokj9ut7aedv2pe7h4uplmjpaj887d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.muhammadaliqadri.whatsapp",
+            "certificate_hash": "b6300e91694e480769c272185e3b4920b0ff0406"
+          }
+        },
+        {
           "client_id": "910360162063-tb7jv6c3g496fcas6qt4b0m5u3up6qam.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

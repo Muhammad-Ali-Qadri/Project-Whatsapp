@@ -94,6 +94,7 @@ public class CreateProfileActivity extends AppCompatActivity {
     public void forwardToMainContact(){
         //TODO: forward to the contacts page here show the contacts page here
         Toast.makeText(this, "Forward to main contacts", Toast.LENGTH_LONG).show();
+
     }
 
     public void onSelectingImage(View view){
