@@ -12,7 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Activities.MainActivity">
-
         </activity>
         <activity android:name=".Activities.CreateProfileActivity" />
         <activity android:name=".Activities.ChatActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar">
