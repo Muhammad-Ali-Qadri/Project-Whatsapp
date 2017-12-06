@@ -2,6 +2,7 @@ package com.example.muhammadaliqadri.whatsapp.Activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -95,7 +96,14 @@ public class CreateProfileActivity extends AppCompatActivity {
 
     public void forwardToMainContact(){
         //TODO: forward to the contacts page here show the contacts page here
-        Toast.makeText(this, "Forward to main contacts", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Forward to main contacts", Toast.LENGTH_LONG).show();
+
+        WhatsappUser user=getUserFromDb();
+
+        Intent intent = new Intent(CreateProfileActivity.this, CustomTabActivity.class);
+        intent.putExtra("user", user);
+        startActivity(intent);
+        finish();
 
     }
 
@@ -118,5 +126,22 @@ public class CreateProfileActivity extends AppCompatActivity {
             }
             photo.setImageBitmap(profilePhoto);
         }
+    }
+
+    public WhatsappUser getUserFromDb(){
+
+        UserOpenHelper helper = new UserOpenHelper(this);
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + UserOpenHelper.USER_PROFILE_TABLE, null);
+        WhatsappUser user=new WhatsappUser();
+
+        if(cursor.moveToNext()){
+
+            user.load(cursor);
+
+        }
+        cursor.close();
+        return user;
+
     }
 }

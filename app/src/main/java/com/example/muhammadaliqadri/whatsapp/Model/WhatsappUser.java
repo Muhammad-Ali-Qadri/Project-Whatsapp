@@ -30,6 +30,7 @@ import java.io.Serializable;
  */
 
 public class WhatsappUser implements Serializable{
+
     protected String userId, userName, status, phoneNumber;
     private Bitmap profilePhoto;
 

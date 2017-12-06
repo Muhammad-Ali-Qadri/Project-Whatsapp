@@ -56,6 +56,11 @@ public class MainActivity extends AppCompatActivity {
         }
         else if(userCheck == 2){
             //TODO: R-Start main chat activity
+            WhatsappUser user=getUserFromDb();
+
+            Intent intent = new Intent(MainActivity.this, CustomTabActivity.class);
+            intent.putExtra("user", user);
+            startActivity(intent);
             finish();
         }
         else {
@@ -165,6 +170,22 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+    public WhatsappUser getUserFromDb(){
+
+        UserOpenHelper helper = new UserOpenHelper(this);
+        SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + UserOpenHelper.USER_PROFILE_TABLE, null);
+        WhatsappUser user=new WhatsappUser();
+
+        if(cursor.moveToNext()){
+
+            user.load(cursor);
+
+        }
+        cursor.close();
+        return user;
+
     }
 
 }
