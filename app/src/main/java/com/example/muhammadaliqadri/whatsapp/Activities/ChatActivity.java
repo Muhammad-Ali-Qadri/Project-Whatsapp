@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.muhammadaliqadri.whatsapp.R;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -49,5 +50,9 @@ public class ChatActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void sendMessage(View view){
+
     }
 }

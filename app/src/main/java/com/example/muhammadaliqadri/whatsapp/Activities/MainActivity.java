@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
             gotoCreateProfile(true);
         }
         else if(userCheck == 2){
-            //Start main chat activity
+            //TODO: Start main chat activity
             finish();
         }
         else {
