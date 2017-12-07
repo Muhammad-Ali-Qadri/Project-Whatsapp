@@ -10,8 +10,12 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.muhammadaliqadri.whatsapp.Activities.CreateProfileActivity;
 import com.example.muhammadaliqadri.whatsapp.Database.UserOpenHelper;
+import com.example.muhammadaliqadri.whatsapp.Fragment.ContactsFragment;
 import com.example.muhammadaliqadri.whatsapp.Utility.BitmapUtility;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,17 +33,17 @@ import java.io.Serializable;
  * Created by Muhammad Ali Qadri on 02/12/2017.
  */
 
-public class WhatsappUser implements Serializable{
+public class WhatsappUser implements Serializable {
 
     protected String userId, userName, status, phoneNumber;
     private Bitmap profilePhoto;
 
-    public WhatsappUser(){
+    public WhatsappUser() {
         userId = userName = status = phoneNumber = "";
         profilePhoto = null;
     }
 
-    public WhatsappUser(String id, String name, String st, String phone, Bitmap map){
+    public WhatsappUser(String id, String name, String st, String phone, Bitmap map) {
         userId = id;
         userName = name;
         status = st;
@@ -87,14 +91,14 @@ public class WhatsappUser implements Serializable{
         this.phoneNumber = phoneNumber;
     }
 
-    public void saveNew(SQLiteDatabase db){
+    public void saveNew(SQLiteDatabase db) {
         ContentValues cv = new ContentValues();
         cv.put("UID", userId);
         cv.put("PHONENUMBER", phoneNumber);
         db.insertWithOnConflict(UserOpenHelper.USER_PROFILE_TABLE, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    public void updateUser(SQLiteDatabase db){
+    public void updateUser(SQLiteDatabase db) {
         ContentValues cv = new ContentValues();
         cv.put("USERNAME", userName);
         cv.put("STATUS", status);
@@ -103,7 +107,39 @@ public class WhatsappUser implements Serializable{
         db.update(UserOpenHelper.USER_PROFILE_TABLE, cv, "UID=?", arr);
     }
 
-    public void load(Cursor cursor){
+    public void updateContactUser(SQLiteDatabase db) {
+
+        ContentValues cv = new ContentValues();
+
+        cv.put("USERNAME", userName);
+        cv.put("STATUS", status);
+        cv.put("PHONENUMBER", phoneNumber);
+
+        if (profilePhoto != null) {
+
+            cv.put("PROFILEIMAGE", BitmapUtility.getBytes(profilePhoto));
+        }
+
+        String arr[] = {userId};
+        db.update(UserOpenHelper.USERS_TABLE, cv, "UID=?", arr);
+
+    }
+
+    public void insertContactUser(SQLiteDatabase db) {
+
+        ContentValues cv = new ContentValues();
+        cv.put("USERNAME", userName);
+        cv.put("STATUS", status);
+        cv.put("PHONENUMBER", phoneNumber);
+        cv.put("UID", userId);
+
+        if (profilePhoto != null) {
+            cv.put("PROFILEIMAGE", BitmapUtility.getBytes(profilePhoto));
+        }
+        db.insertWithOnConflict(UserOpenHelper.USERS_TABLE, null, cv, SQLiteDatabase.CONFLICT_REPLACE);
+    }
+
+    public void load(Cursor cursor) {
         userId = cursor.getString(0);
         userName = cursor.getString(1);
         phoneNumber = cursor.getString(2);
@@ -118,7 +154,7 @@ public class WhatsappUser implements Serializable{
         out.writeObject(phoneNumber);
         out.writeObject(status);
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        if(profilePhoto != null)
+        if (profilePhoto != null)
             profilePhoto.compress(Bitmap.CompressFormat.PNG, 0, byteStream);
         byte bitmapBytes[] = byteStream.toByteArray();
         out.write(bitmapBytes, 0, bitmapBytes.length);
@@ -128,7 +164,7 @@ public class WhatsappUser implements Serializable{
     // Deserializes a byte array representing the Bitmap and decodes it
     private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
         userId = (String) in.readObject();
-        userName = (String ) in.readObject();
+        userName = (String) in.readObject();
         phoneNumber = (String) in.readObject();
         status = (String) in.readObject();
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
@@ -139,7 +175,7 @@ public class WhatsappUser implements Serializable{
         profilePhoto = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
     }
 
-    public void saveUserToFirebase(final CreateProfileActivity activity){
+    public void saveUserToFirebase(final CreateProfileActivity activity) {
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference("PROFILEPHOTOS/" + userId + ".png");
@@ -174,7 +210,20 @@ public class WhatsappUser implements Serializable{
 
     //TODO: add rerieve mechanism from firebase for users here
 
-//    public static WhatsappUser createUserFromFirebase(FirebaseWhatsappUser user){
+    //    public static WhatsappUser createUserFromFirebase(FirebaseWhatsappUser user){
 //
 //    }
+    public void setImageFromStorage(String imageUrl, ContactsFragment th) {
+
+        Bitmap bitmap = null;
+        Glide.with(th)
+                .asBitmap()
+                .load(imageUrl)
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                        profilePhoto = resource;
+                    }
+                });
+    }
 }

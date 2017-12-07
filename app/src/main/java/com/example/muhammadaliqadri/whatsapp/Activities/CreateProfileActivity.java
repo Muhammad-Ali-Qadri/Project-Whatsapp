@@ -77,6 +77,7 @@ public class CreateProfileActivity extends AppCompatActivity {
             user.setUserName(name);
             if(profilePhoto == null)
                 profilePhoto = BitmapFactory.decodeResource(CreateProfileActivity.this.getResources(), R.drawable.ic_person_black_24dp);
+
             user.setProfilePhoto(profilePhoto);
             user.setStatus(getResources().getString(R.string.default_status));
 

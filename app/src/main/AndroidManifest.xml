@@ -3,6 +3,7 @@
     package="com.example.muhammadaliqadri.whatsapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
 
     <application
         android:allowBackup="true"
@@ -12,20 +13,27 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Activities.MainActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+
         </activity>
         <activity android:name=".Activities.CreateProfileActivity" />
 
         <activity android:name=".Activities.ChatActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+        </activity>
+        <activity android:name=".Activities.CustomTabActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-        <activity android:name=".Activities.CustomTabActivity"/>
 
     </application>
 

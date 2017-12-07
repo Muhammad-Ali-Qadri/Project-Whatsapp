@@ -1,6 +1,10 @@
 package com.example.muhammadaliqadri.whatsapp.Activities;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.ContactsContract;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +17,8 @@ import android.widget.Toast;
 import com.example.muhammadaliqadri.whatsapp.Adapter.ViewPagerAdapter;
 import com.example.muhammadaliqadri.whatsapp.Fragment.ChatFragment;
 import com.example.muhammadaliqadri.whatsapp.Fragment.ContactsFragment;
+import com.example.muhammadaliqadri.whatsapp.Model.WhatsappUser;
+import com.example.muhammadaliqadri.whatsapp.Observers.MyObserver;
 import com.example.muhammadaliqadri.whatsapp.R;
 
 public class CustomTabActivity extends AppCompatActivity {
@@ -30,10 +36,20 @@ public class CustomTabActivity extends AppCompatActivity {
     String[] tabTitle={"CHAT","CONTACTS"};
     int[] unreadCount={5,0};
 
+    WhatsappUser user;
+    private int PERMISSIONS_REQUEST_READ_CONTACTS=1;
+    private int INSERT_CONTACT_REQUEST=2;
+
+    MyObserver myObserver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_without_icon);
+
+        //getting user
+        Intent intent = getIntent();
+        user = (WhatsappUser) intent.getSerializableExtra("user");
 
         //Initializing viewPager
         viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -73,6 +89,7 @@ public class CustomTabActivity extends AppCompatActivity {
         });
 
 
+
     }
 
     @Override
@@ -102,12 +119,15 @@ public class CustomTabActivity extends AppCompatActivity {
     {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
+        getIntent().putExtra("user", user);
+
         chatFragment=new ChatFragment();
         contactsFragment=new ContactsFragment();
 
         adapter.addFragment(chatFragment,"CHAT");
         adapter.addFragment(contactsFragment,"CONTACTS");
         viewPager.setAdapter(adapter);
+
     }
 
     private View prepareTabView(int pos) {
@@ -140,5 +160,54 @@ public class CustomTabActivity extends AppCompatActivity {
 
             tabLayout.getTabAt(i).setCustomView(prepareTabView(i));
         }
+    }
+
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
+
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted
+                contactsFragment.getPermissionsToShowContacts();
+            } else {
+
+                Toast.makeText(this, "Until you grant the permission, we canot display the names", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+// TODO Auto-generated method stub
+        if(requestCode == INSERT_CONTACT_REQUEST)
+        {
+            if (resultCode == RESULT_OK)
+            {
+                Toast.makeText(getBaseContext(), "Contacts Adding Successfully", Toast.LENGTH_SHORT).show();
+
+            }else if(resultCode == RESULT_CANCELED)
+            {
+                Toast.makeText(getBaseContext(), "Contacts Adding Error", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        getContentResolver().unregisterContentObserver(myObserver);
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+       myObserver = new MyObserver(new Handler());
+        getContentResolver().registerContentObserver(ContactsContract.Contacts.CONTENT_VCARD_URI,false,myObserver);
+        super.onResume();
     }
 }
