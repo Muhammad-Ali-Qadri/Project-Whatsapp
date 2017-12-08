@@ -42,7 +42,7 @@ import static android.app.Activity.RESULT_OK;
 public class ChatFragment extends Fragment {
 
 
-/*
+
 
     public static ArrayList<WhatsappUser> rowItems;
     ListView mylistview;
@@ -177,6 +177,5 @@ public class ChatFragment extends Fragment {
         }
         contactListAdapter.notifyDataSetChanged();
     }
-*/
 
 }
