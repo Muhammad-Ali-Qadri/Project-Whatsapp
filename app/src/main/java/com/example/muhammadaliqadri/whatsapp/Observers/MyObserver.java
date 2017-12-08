@@ -16,11 +16,13 @@ public class MyObserver extends ContentObserver {
 
     @Override
     public void onChange(boolean selfChange) {
+        System.out.println("hahha");
         this.onChange(selfChange,null);
     }
 
     @Override
     public void onChange(boolean selfChange, Uri uri) {
+        System.out.println("agagag");
         super.onChange(selfChange, uri);
     }
 }

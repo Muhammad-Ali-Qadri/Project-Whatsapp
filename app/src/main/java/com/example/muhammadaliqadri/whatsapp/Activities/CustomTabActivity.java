@@ -1,5 +1,7 @@
 package com.example.muhammadaliqadri.whatsapp.Activities;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -11,6 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Filter;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +24,8 @@ import com.example.muhammadaliqadri.whatsapp.Fragment.ContactsFragment;
 import com.example.muhammadaliqadri.whatsapp.Model.WhatsappUser;
 import com.example.muhammadaliqadri.whatsapp.Observers.MyObserver;
 import com.example.muhammadaliqadri.whatsapp.R;
+
+import java.util.ArrayList;
 
 public class CustomTabActivity extends AppCompatActivity {
 
@@ -96,6 +102,32 @@ public class CustomTabActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_home, menu);
         // Associate searchable configuration with the SearchView
+
+        SearchManager searchManager = (SearchManager)
+                getSystemService(Context.SEARCH_SERVICE);
+        MenuItem searchMenuItem = menu.findItem(R.id.search);
+        SearchView searchView = (SearchView) searchMenuItem.getActionView();
+
+        searchView.setSearchableInfo(searchManager.
+                getSearchableInfo(getComponentName()));
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                if(contactsFragment!=null && contactsFragment.contactListAdapter!=null)
+                contactsFragment.contactListAdapter.getFilter().filter(newText);
+                return true;
+            }
+        });
+
+
+
         return true;
     }
 
@@ -180,7 +212,7 @@ public class CustomTabActivity extends AppCompatActivity {
         }
     }
 
-    @Override
+  /*  @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
 // TODO Auto-generated method stub
@@ -196,18 +228,30 @@ public class CustomTabActivity extends AppCompatActivity {
             }
 
         }
-    }
+    }*/
 
     @Override
     protected void onPause() {
-        getContentResolver().unregisterContentObserver(myObserver);
+      //  getContentResolver().unregisterContentObserver(myObserver);
         super.onPause();
     }
 
     @Override
     protected void onResume() {
-       myObserver = new MyObserver(new Handler());
-        getContentResolver().registerContentObserver(ContactsContract.Contacts.CONTENT_VCARD_URI,false,myObserver);
         super.onResume();
+        //myObserver = new MyObserver(new Handler());
+        //getContentResolver().registerContentObserver(ContactsContract.Contacts.CONTENT_VCARD_URI,false,myObserver);
+
+//        contactsFragment.getPhoneContactList();
     }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+    }
+    @Override
+    public void onRestoreInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
 }

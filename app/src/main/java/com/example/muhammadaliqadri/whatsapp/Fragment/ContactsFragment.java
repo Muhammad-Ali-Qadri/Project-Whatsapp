@@ -63,7 +63,6 @@ import java.util.List;
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -71,17 +70,18 @@ public class ContactsFragment extends Fragment {
 
 
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 1;
-    final int PICK_CONTACT=1;
-    List<WhatsappUser> rowItems;
+    final int PICK_CONTACT = 1;
+    public ArrayList<WhatsappUser> rowItems;
     ListView mylistview;
     View view;
-    int INSERT_CONTACT_REQUEST=2;
+    int INSERT_CONTACT_REQUEST = 2;
 
     private DatabaseReference mFirebaseDatabase;
     private FirebaseDatabase mFirebaseInstance;
-    ContactListAdapter contactListAdapter;
+    public ContactListAdapter contactListAdapter;
 
     WhatsappUser user;
+
     public ContactsFragment() {
         // Required empty public constructor
     }
@@ -90,19 +90,22 @@ public class ContactsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        rowItems=new ArrayList<WhatsappUser>();
+        rowItems = new ArrayList<WhatsappUser>();
 
         mFirebaseInstance = FirebaseDatabase.getInstance();
         // get reference to 'RepositoryName' node
         mFirebaseDatabase = mFirebaseInstance.getReference();
 
-    }
+        if(savedInstanceState!=null){
+           rowItems=(ArrayList<WhatsappUser>)savedInstanceState.getSerializable("contacts");
+        }
 
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view=inflater.inflate(R.layout.fragment_contacts, container, false);
+        view = inflater.inflate(R.layout.fragment_contacts, container, false);
 
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fabAddContact);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -110,13 +113,7 @@ public class ContactsFragment extends Fragment {
             public void onClick(View view) {
 
                /* Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-*/
-
-               /* int INSERT_CONTACT_REQUEST=2;
-                Intent i = new Intent(Intent.ACTION_INSERT, ContactsContract.Contacts.CONTENT_URI);
-                startActivityForResult(i, INSERT_CONTACT_REQUEST);
-                */
+                        .setAction("Action", null).show();*/
 
 // Creates a new Intent to insert a contact
                 Intent intent = new Intent(ContactsContract.Intents.Insert.ACTION);
@@ -140,13 +137,12 @@ public class ContactsFragment extends Fragment {
             //load contacts from db
 
             loadContactsFormSqlite(getActivity().getBaseContext());
-
-            if(rowItems.size()==0){getPhoneContactList();}
+            getPhoneContactList();
         }
     }
 
     public void getPhoneContactList() {
-        ArrayList<WhatsappUser> records=new ArrayList<WhatsappUser>();
+        ArrayList<WhatsappUser> records = new ArrayList<WhatsappUser>();
         ContentResolver cr = getActivity().getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                 null, null, null, null);
@@ -170,7 +166,7 @@ public class ContactsFragment extends Fragment {
                         String phoneNo = pCur.getString(pCur.getColumnIndex(
                                 ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-                        contact=new WhatsappUser();
+                        contact = new WhatsappUser();
                         contact.setPhoneNumber(phoneNo);
                         records.add(contact);
                     }
@@ -179,14 +175,14 @@ public class ContactsFragment extends Fragment {
             }
         }
 
-        if(cur!=null){
+        if (cur != null) {
             cur.close();
         }
 
         RemoveContactsNotAvailableInApp(records);
     }
 
-    public  void RemoveContactsNotAvailableInApp(final ArrayList<WhatsappUser> records) {
+    public void RemoveContactsNotAvailableInApp(final ArrayList<WhatsappUser> records) {
 
         mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -199,7 +195,8 @@ public class ContactsFragment extends Fragment {
                         WhatsappUser u;
                         for (DataSnapshot child : list.getChildren()) {
 
-                            if(UserIsInContacts(records,(String)child.child("phoneNumber").getValue())) {
+                            if (UserIsInContacts(records, (String) child.child("phoneNumber").getValue())
+                                    && !UserIsInContacts(rowItems, (String) child.child("phoneNumber").getValue())) {
 
                                 u = new WhatsappUser();
                                 u.setPhoneNumber((String) child.child("phoneNumber").getValue());
@@ -214,8 +211,8 @@ public class ContactsFragment extends Fragment {
                                 u.insertContactUser(database);
 
 
-                                String photoURL=(String) child.child("profilePhotoUri").getValue();
-                                getImage(photoURL,u);
+                                String photoURL = (String) child.child("profilePhotoUri").getValue();
+                                getImage(photoURL, u);
                             }
 
                         }
@@ -231,22 +228,23 @@ public class ContactsFragment extends Fragment {
             }
         });
     }
+
     public void setContactsView(View view) {
-         contactListAdapter = new ContactListAdapter(getActivity(), rowItems);
-        mylistview=view.findViewById(R.id.contact_list);
+        contactListAdapter = new ContactListAdapter(getActivity(), rowItems);
+        mylistview = view.findViewById(R.id.contact_list);
         mylistview.setAdapter(contactListAdapter);
     }
-    private boolean UserIsInContacts(ArrayList<WhatsappUser> records,String phone){
-        for(int i=0;i<records.size();i++){
-            if(records.get(i).getPhoneNumber().equalsIgnoreCase(phone)){
+
+    private boolean UserIsInContacts(ArrayList<WhatsappUser> records, String phone) {
+        for (int i = 0; i < records.size(); i++) {
+            if (records.get(i).getPhoneNumber().equalsIgnoreCase(phone)) {
                 return true;
             }
         }
         return false;
     }
 
-    void getImage(String string_url,final WhatsappUser u)
-    {
+    void getImage(String string_url, final WhatsappUser u) {
 
         RequestQueue myQueue = Volley.newRequestQueue(getActivity().getBaseContext());
 
@@ -256,8 +254,8 @@ public class ContactsFragment extends Fragment {
                     @Override
                     public void onResponse(Bitmap bitmap) {
 
-                            u.setProfilePhoto(bitmap);
-                            contactListAdapter.notifyDataSetChanged();
+                        u.setProfilePhoto(bitmap);
+                        contactListAdapter.notifyDataSetChanged();
 
                         UserOpenHelper helper = new UserOpenHelper(getActivity().getBaseContext());
                         final SQLiteDatabase database = helper.getWritableDatabase();
@@ -265,7 +263,7 @@ public class ContactsFragment extends Fragment {
 
                     }
                 }, 0, 0, null,
-                new  com.android.volley.Response.ErrorListener() {
+                new com.android.volley.Response.ErrorListener() {
                     public void onErrorResponse(VolleyError error) {
 
                     }
@@ -280,7 +278,7 @@ public class ContactsFragment extends Fragment {
         UserOpenHelper helper = new UserOpenHelper(getActivity().getBaseContext());
         final SQLiteDatabase database = helper.getWritableDatabase();
 
-        String query = "SELECT * FROM "+UserOpenHelper.USERS_TABLE;
+        String query = "SELECT * FROM " + UserOpenHelper.USERS_TABLE;
         Cursor cursor = database.rawQuery(query, null);
 
         while (cursor.moveToNext()) {
@@ -292,20 +290,33 @@ public class ContactsFragment extends Fragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 // TODO Auto-generated method stub
-        if(requestCode == INSERT_CONTACT_REQUEST)
-        {
-            if (resultCode == RESULT_OK)
-            {
+        if (requestCode == INSERT_CONTACT_REQUEST) {
+            if (resultCode == RESULT_OK) {
                 Toast.makeText(getContext(), "Contacts Adding Successfully", Toast.LENGTH_SHORT).show();
 
-            }else if(resultCode == RESULT_CANCELED)
-            {
-               Toast.makeText(getContext(), "Contacts Adding Error", Toast.LENGTH_SHORT).show();
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(getContext(), "Contacts Adding Error", Toast.LENGTH_SHORT).show();
             }
 
         }
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("contacts", rowItems);
+    }
+
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            // Restore last state for checked position.
+            rowItems = (ArrayList<WhatsappUser>) savedInstanceState.getSerializable("contacts");
+        }
+    }
+
+
 }
