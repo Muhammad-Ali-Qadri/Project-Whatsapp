@@ -46,6 +46,18 @@
 
         </activity>
 
+
+        <activity android:theme="@style/Theme.AppCompat.Light.NoActionBar" android:name=".Activities.EditProfile">
+
+        </activity>
+        <activity
+            android:name=".Activities.ProfileActivity"
+            android:screenOrientation="portrait"
+            >
+
+        </activity>
+        <activity android:name=".Activities.Account_Activity"></activity>
+
     </application>
 
 </manifest>

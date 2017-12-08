@@ -1,0 +1,63 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+   >
+
+    <android.support.v7.view.menu.ActionMenuItemView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="settings "
+        android:textColor="@color/white"
+        android:id="@+id/actionMenuItemView2"
+        android:background="@color/colorPrimary"
+        android:layout_marginTop="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:textSize="50px"
+        android:textAlignment="center"
+        android:textStyle="italic"
+       />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_below="@+id/actionMenuItemView2"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="18dp">
+
+        <android.support.v7.widget.RecyclerView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".MainActivity"
+            android:clickable="true"
+            android:layout_below="@+id/include"
+            android:layout_alignParentStart="true"
+
+            android:defaultFocusHighlightEnabled="true"
+            />
+
+        <include
+            android:id="@+id/include"
+            layout="@layout/layoutt"
+            />
+    </RelativeLayout>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/button2"
+        android:layout_width="40dp"
+        android:layout_height="30dp"
+        android:text="Back"
+        android:src="@drawable/download"
+        android:textSize="40px"
+        android:textColor="@color/colorAccent"
+        android:background="@color/colorPrimary"
+        android:clickable="true"
+        android:layout_marginTop="9dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="21dp" />
+</RelativeLayout>
