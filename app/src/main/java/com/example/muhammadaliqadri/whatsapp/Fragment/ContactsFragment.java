@@ -80,17 +80,17 @@ public class ContactsFragment extends Fragment {
     private FirebaseDatabase mFirebaseInstance;
     public ContactListAdapter contactListAdapter;
 
-    WhatsappUser user;
 
     public ContactsFragment() {
         // Required empty public constructor
+        rowItems = new ArrayList<WhatsappUser>();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        rowItems = new ArrayList<WhatsappUser>();
+
 
         mFirebaseInstance = FirebaseDatabase.getInstance();
         // get reference to 'RepositoryName' node
@@ -209,6 +209,7 @@ public class ContactsFragment extends Fragment {
                                 UserOpenHelper helper = new UserOpenHelper(getActivity().getBaseContext());
                                 final SQLiteDatabase database = helper.getWritableDatabase();
                                 u.insertContactUser(database);
+                                database.close();
 
 
                                 String photoURL = (String) child.child("profilePhotoUri").getValue();
@@ -220,6 +221,7 @@ public class ContactsFragment extends Fragment {
                     }
 
                 }
+
             }
 
             @Override
@@ -230,7 +232,7 @@ public class ContactsFragment extends Fragment {
     }
 
     public void setContactsView(View view) {
-        contactListAdapter = new ContactListAdapter(getActivity(), rowItems);
+        contactListAdapter = new ContactListAdapter(getActivity(), rowItems,0);
         mylistview = view.findViewById(R.id.contact_list);
         mylistview.setAdapter(contactListAdapter);
     }
@@ -260,6 +262,7 @@ public class ContactsFragment extends Fragment {
                         UserOpenHelper helper = new UserOpenHelper(getActivity().getBaseContext());
                         final SQLiteDatabase database = helper.getWritableDatabase();
                         u.updateContactUser(database);
+                        database.close();
 
                     }
                 }, 0, 0, null,
@@ -287,6 +290,9 @@ public class ContactsFragment extends Fragment {
             rowItems.add(object);
             contactListAdapter.notifyDataSetChanged();
         }
+        cursor.close();
+        database.close();
+        ChatFragment.getRows(rowItems);
     }
 
     @Override

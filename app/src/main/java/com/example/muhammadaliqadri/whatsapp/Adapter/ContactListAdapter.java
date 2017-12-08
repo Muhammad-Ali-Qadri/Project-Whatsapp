@@ -25,12 +25,14 @@ public class ContactListAdapter extends BaseAdapter  implements Filterable {
     List<WhatsappUser> rowItems;
     List<WhatsappUser> filteredRowItems;
     Filter filter;
+    int x;
 
     List<WhatsappUser> filterRowItems;
-    public ContactListAdapter(Context context, List<WhatsappUser> rowItems) {
+    public ContactListAdapter(Context context, List<WhatsappUser> rowItems,int x) {
         this.context = context;
         this.rowItems = rowItems;
         filteredRowItems=new ArrayList<WhatsappUser>();
+        this.x=x;
     }
 
     @Override
@@ -58,6 +60,7 @@ public class ContactListAdapter extends BaseAdapter  implements Filterable {
         ImageView profile_pic;
         TextView member_name;
         TextView status;
+        TextView message;
     }
 
     @Override
@@ -78,6 +81,8 @@ public class ContactListAdapter extends BaseAdapter  implements Filterable {
                     .findViewById(R.id.profile_pic);
             holder.status = (TextView) convertView.findViewById(R.id.status);
 
+            holder.message = (TextView) convertView.findViewById(R.id.lastMessage);
+
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -87,6 +92,13 @@ public class ContactListAdapter extends BaseAdapter  implements Filterable {
         holder.profile_pic.setImageBitmap(row_pos.getProfilePhoto());
         holder.member_name.setText(row_pos.getUserName());
         holder.status.setText(row_pos.getStatus());
+        if(x==0){
+            holder.message.setVisibility(View.GONE);
+        }
+        else{
+            holder.message.setVisibility(View.VISIBLE);
+            //set data
+        }
 
         return convertView;
     }

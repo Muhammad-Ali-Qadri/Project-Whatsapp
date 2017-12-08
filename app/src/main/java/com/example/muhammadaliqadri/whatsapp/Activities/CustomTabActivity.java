@@ -40,9 +40,9 @@ public class CustomTabActivity extends AppCompatActivity {
     ContactsFragment contactsFragment;
 
     String[] tabTitle={"CHAT","CONTACTS"};
-    int[] unreadCount={5,0};
+    int[] unreadCount={0,0};
 
-    WhatsappUser user;
+    public static WhatsappUser user;
     private int PERMISSIONS_REQUEST_READ_CONTACTS=1;
     private int INSERT_CONTACT_REQUEST=2;
 
@@ -153,8 +153,8 @@ public class CustomTabActivity extends AppCompatActivity {
 
         getIntent().putExtra("user", user);
 
-        chatFragment=new ChatFragment();
         contactsFragment=new ContactsFragment();
+        chatFragment=new ChatFragment();
 
         adapter.addFragment(chatFragment,"CHAT");
         adapter.addFragment(contactsFragment,"CONTACTS");
