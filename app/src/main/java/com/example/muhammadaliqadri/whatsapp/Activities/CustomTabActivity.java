@@ -139,7 +139,12 @@ public class CustomTabActivity extends AppCompatActivity {
                 Toast.makeText(this, "Home Status Click", Toast.LENGTH_SHORT).show();
                 return true;*/
             case R.id.action_settings:
-                Toast.makeText(this, "Home Settings Click", Toast.LENGTH_SHORT).show();
+               /* Toast.makeText(this, "Home Settings Click", Toast.LENGTH_SHORT).show();
+*/
+                Intent intent = new Intent(CustomTabActivity.this, Account_Activity.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
+
                 return true;
 
             default:
