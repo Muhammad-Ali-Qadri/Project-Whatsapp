@@ -292,7 +292,7 @@ public class ContactsFragment extends Fragment {
         }
         cursor.close();
         database.close();
-        ChatFragment.getRows(rowItems);
+        /*ChatFragment.getRows(rowItems);*/
     }
 
     @Override
